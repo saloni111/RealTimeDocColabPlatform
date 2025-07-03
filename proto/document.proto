@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package document;
+
+option go_package = "github.com/saloni111/RealTimeDocColabPlatform/document-service/proto;document";
+
+service DocumentService {
+  rpc CreateDocument(CreateDocumentRequest) returns (CreateDocumentResponse);
+  rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
+  rpc UpdateDocument(UpdateDocumentRequest) returns (UpdateDocumentResponse);
+  rpc DeleteDocument(DeleteDocumentRequest) returns (DeleteDocumentResponse);
+  rpc ListDocumentVersions(ListDocumentVersionsRequest) returns (ListDocumentVersionsResponse);
+}
+
+message CreateDocumentRequest {
+  string title = 1;
+  string content = 2;
+  string author = 3;
+}
+
+message CreateDocumentResponse {
+  string document_id = 1;
+}
+
+message GetDocumentRequest {
+  string document_id = 1;
+}
+
+message GetDocumentResponse {
+  string document_id = 1;
+  string title = 2;
+  string content = 3;
+  string author = 4;
+  repeated string versions = 5;
+}
+
+message UpdateDocumentRequest {
+  string document_id = 1;
+  string content = 2;
+}
+
+message UpdateDocumentResponse {
+  string document_id = 1;
+}
+
+message DeleteDocumentRequest {
+  string document_id = 1;
+}
+
+message DeleteDocumentResponse {
+  string document_id = 1;
+}
+
+message ListDocumentVersionsRequest {
+  string document_id = 1;
+}
+
+message ListDocumentVersionsResponse {
+  repeated string versions = 1;
+}

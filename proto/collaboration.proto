@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package collaboration;
+
+option go_package = "github.com/saloni111/RealTimeDocColabPlatform/collaboration-service/proto;collaboration";
+
+service CollaborationService {
+  rpc JoinDocument(JoinDocumentRequest) returns (JoinDocumentResponse);
+  rpc SyncChanges(SyncChangesRequest) returns (SyncChangesResponse);
+  rpc LeaveDocument(LeaveDocumentRequest) returns (LeaveDocumentResponse);
+}
+
+message JoinDocumentRequest {
+  string document_id = 1;
+  string user_id = 2;
+}
+
+message JoinDocumentResponse {
+  string session_id = 1;
+}
+
+message SyncChangesRequest {
+  string session_id = 1;
+  string document_id = 2;
+  string user_id = 3;
+  string changes = 4; // JSON or other format representing changes
+}
+
+message SyncChangesResponse {
+  bool success = 1;
+}
+
+message LeaveDocumentRequest {
+  string session_id = 1;
+  string document_id = 2;
+  string user_id = 3;
+}
+
+message LeaveDocumentResponse {
+  bool success = 1;
+}
