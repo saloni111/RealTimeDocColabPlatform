@@ -99,8 +99,8 @@ open http://localhost:8080
 ./deploy.sh
 
 # Or use Docker Compose directly
-docker-compose up -d
-```
+   docker-compose up -d
+   ```
 
 ## Real-World Testing
 
