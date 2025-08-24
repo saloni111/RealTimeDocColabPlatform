@@ -21,4 +21,4 @@ nohup go run main.go > ../api-gateway.log 2>&1 &
 echo "Started api-gateway"
 
 cd ..
-echo "All services started. Check *.log files for output." 
+echo "All services started. Check *.log files for output." # Updated
