@@ -1,13 +1,13 @@
-# Multi-stage build for API Gateway (main service)
+# Build API Gateway service
 FROM golang:1.21-alpine AS builder
 
-# Install git and build dependencies
+# Install git
 RUN apk add --no-cache git
 
-# Set working directory
-WORKDIR /app
+# Set working directory to api-gateway
+WORKDIR /app/api-gateway
 
-# Copy go mod files for API Gateway
+# Copy go mod files
 COPY api-gateway/go.mod api-gateway/go.sum ./
 
 # Download dependencies
@@ -16,7 +16,7 @@ RUN go mod download
 # Copy API Gateway source code
 COPY api-gateway/ .
 
-# Build the API Gateway
+# Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 # Production stage
@@ -28,7 +28,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # Copy binary from builder
-COPY --from=builder /app/main .
+COPY --from=builder /app/api-gateway/main .
 
 # Expose port
 EXPOSE 8080
