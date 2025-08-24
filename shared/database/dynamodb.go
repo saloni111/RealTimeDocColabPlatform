@@ -69,3 +69,4 @@ func getRegion() string {
 	}
 	return "us-east-1" // Default region
 }
+# Updated
