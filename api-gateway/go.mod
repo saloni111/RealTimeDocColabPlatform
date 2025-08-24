@@ -34,8 +34,8 @@ require (
 	google.golang.org/protobuf v1.34.2 // indirect
 )
 
-replace github.com/saloni111/RealTimeDocColabPlatform/user-service => ../user-service
+replace github.com/saloni111/RealTimeDocColabPlatform/user-service => ./user-service
 
-replace github.com/saloni111/RealTimeDocColabPlatform/document-service => ../document-service
+replace github.com/saloni111/RealTimeDocColabPlatform/document-service => ./document-service
 
-replace github.com/saloni111/RealTimeDocColabPlatform/collaboration-service => ../collaboration-service
+replace github.com/saloni111/RealTimeDocColabPlatform/collaboration-service => ./collaboration-service
