@@ -116,3 +116,4 @@ func LeaveDocumentHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(resp)
 }
+# Updated
