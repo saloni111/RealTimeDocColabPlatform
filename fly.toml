@@ -1,7 +1,4 @@
-# fly.toml app configuration file generated for realtimedoccolabplatform on 2025-01-24T15:47:02Z
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-
+# fly.toml app configuration file for realtimedoccolabplatform
 app = "realtimedoccolabplatform"
 primary_region = "iad"
 
@@ -14,6 +11,14 @@ primary_region = "iad"
   PORT = "8080"
   LOG_LEVEL = "info"
 
+[processes]
+  app = "main"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
 [[services]]
   protocol = "tcp"
   internal_port = 8080
@@ -22,7 +27,6 @@ primary_region = "iad"
   [[services.ports]]
     port = 80
     handlers = ["http"]
-    force_https = true
 
   [[services.ports]]
     port = 443
@@ -32,9 +36,3 @@ primary_region = "iad"
     grace_period = "10s"
     interval = "30s"
     timeout = "5s"
-    restart_limit = 0
-
-[[vm]]
-  cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 512
