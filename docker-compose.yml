@@ -94,3 +94,4 @@ volumes:
 networks:
   dochub-network:
     driver: bridge
+# Updated
