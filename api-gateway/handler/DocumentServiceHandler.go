@@ -46,10 +46,11 @@ func GetDocumentHandler(w http.ResponseWriter, r *http.Request) {
 		DocumentId: vars["document_id"],
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	// GET requests don't have a request body, so no need to decode JSON
+	// if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
 
 	resp, err := client.GetDocument(context.Background(), req)
 
@@ -72,10 +73,11 @@ func DeleteDocumentHandler(w http.ResponseWriter, r *http.Request) {
 		DocumentId: vars["document_id"],
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	// DELETE requests don't need JSON body decoding
+	// if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
 
 	resp, err := client.DeleteDocument(context.Background(), req)
 
@@ -94,13 +96,20 @@ func UpdateDocumentHandler(w http.ResponseWriter, r *http.Request) {
 	client := pb.NewDocumentServiceClient(conn)
 
 	vars := mux.Vars(r)
-	req := &pb.UpdateDocumentRequest{
-		DocumentId: vars["document_id"],
+
+	// Parse JSON body for content update
+	var updateRequest struct {
+		Content string `json:"content"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&updateRequest); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	req := &pb.UpdateDocumentRequest{
+		DocumentId: vars["document_id"],
+		Content:    updateRequest.Content,
 	}
 
 	resp, err := client.UpdateDocument(context.Background(), req)
@@ -124,10 +133,11 @@ func ListDocumentVersionHandler(w http.ResponseWriter, r *http.Request) {
 		DocumentId: vars["document_id"],
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	// GET requests don't need JSON body decoding
+	// if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
 
 	resp, err := client.ListDocumentVersions(context.Background(), req)
 

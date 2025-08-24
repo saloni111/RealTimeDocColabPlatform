@@ -22,7 +22,7 @@ func (s *Server) CreateDocument(ctx context.Context, req *pb.CreateDocumentReque
 	document := model.Document{
 		Title:      req.Title,
 		Author:     req.Author,
-		Content:    " ",
+		Content:    req.Content, // Fixed: Use actual content instead of " "
 		DocumentID: documentID,
 		Timestamp:  creationTimestamp,
 		Versions:   []string{creationTimestamp},

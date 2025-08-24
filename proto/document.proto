@@ -10,6 +10,7 @@ service DocumentService {
   rpc UpdateDocument(UpdateDocumentRequest) returns (UpdateDocumentResponse);
   rpc DeleteDocument(DeleteDocumentRequest) returns (DeleteDocumentResponse);
   rpc ListDocumentVersions(ListDocumentVersionsRequest) returns (ListDocumentVersionsResponse);
+  rpc ListDocuments(ListDocumentsRequest) returns (ListDocumentsResponse);
 }
 
 message CreateDocumentRequest {
@@ -57,4 +58,12 @@ message ListDocumentVersionsRequest {
 
 message ListDocumentVersionsResponse {
   repeated string versions = 1;
+}
+
+message ListDocumentsRequest {
+  // Empty for now - can add pagination later
+}
+
+message ListDocumentsResponse {
+  repeated GetDocumentResponse documents = 1;
 }

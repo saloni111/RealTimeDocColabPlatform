@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # DynamoDB Local
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: dochub-dynamodb
+    ports:
+      - "9000:8000"
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "./data"]
+    volumes:
+      - dynamodb_data:/home/dynamodblocal/data
+    networks:
+      - dochub-network
+
+  # User Service
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: dochub-user-service
+    ports:
+      - "50051:50051"
+    environment:
+      - ENV=production
+      - DYNAMODB_LOCAL=true
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+    depends_on:
+      - dynamodb
+    networks:
+      - dochub-network
+    restart: unless-stopped
+
+  # Document Service
+  document-service:
+    build:
+      context: ./document-service
+      dockerfile: Dockerfile
+    container_name: dochub-document-service
+    ports:
+      - "50052:50052"
+    environment:
+      - ENV=production
+      - DYNAMODB_LOCAL=true
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+    depends_on:
+      - dynamodb
+    networks:
+      - dochub-network
+    restart: unless-stopped
+
+  # Collaboration Service
+  collaboration-service:
+    build:
+      context: ./collaboration-service
+      dockerfile: Dockerfile
+    container_name: dochub-collaboration-service
+    ports:
+      - "50053:50053"
+    environment:
+      - ENV=production
+      - DYNAMODB_LOCAL=true
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+    depends_on:
+      - dynamodb
+    networks:
+      - dochub-network
+    restart: unless-stopped
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: dochub-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV=production
+      - USER_SERVICE_ADDR=user-service:50051
+      - DOCUMENT_SERVICE_ADDR=document-service:50052
+      - COLLABORATION_SERVICE_ADDR=collaboration-service:50053
+    depends_on:
+      - user-service
+      - document-service
+      - collaboration-service
+    networks:
+      - dochub-network
+    restart: unless-stopped
+
+volumes:
+  dynamodb_data:
+
+networks:
+  dochub-network:
+    driver: bridge

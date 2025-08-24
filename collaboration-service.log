@@ -1,1 +1,2 @@
-2025/07/03 14:02:58 server listening at [::]:50053
+2025/08/24 09:54:01 failed to listen: listen tcp :50053: bind: address already in use
+exit status 1

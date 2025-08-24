@@ -62,14 +62,18 @@ func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	client := pb.NewUserServiceClient(conn)
 
-	var req pb.GetUserProfileRequest
-
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	// Get user_id from query parameter
+	userID := r.URL.Query().Get("user_id")
+	if userID == "" {
+		http.Error(w, "user_id query parameter is required", http.StatusBadRequest)
 		return
 	}
 
-	resp, err := client.GetUserProfile(context.Background(), &req)
+	req := &pb.GetUserProfileRequest{
+		UserId: userID,
+	}
+
+	resp, err := client.GetUserProfile(context.Background(), req)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

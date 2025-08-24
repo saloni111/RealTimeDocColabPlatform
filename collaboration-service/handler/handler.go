@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -55,25 +53,26 @@ func (s *Server) SyncChanges(ctx context.Context, req *pb.SyncChangesRequest) (*
 		return nil, err
 	}
 
-	var changes map[string]interface{}
-	if err := json.Unmarshal([]byte(req.Changes), &changes); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal changes: %v", err)
-	}
+	// Accept plain text changes - no need to parse as JSON
+	log.Printf("User %s syncing changes to document %s: %s", req.UserId, req.DocumentId, req.Changes)
 
 	doc.Mutex.Lock()
 	defer doc.Mutex.Unlock()
 
+	// Update document content with the changes
 	doc.Content = req.Changes
 	go s.DocumentStore.UpdateDocument(req.DocumentId, req.Changes)
 
+	// Broadcast changes to other users if they have active connections
 	for _, user := range doc.Users {
-		if user.UserID != req.UserId {
+		if user.UserID != req.UserId && user.Connection != nil {
 			if err := user.Connection.WriteMessage(websocket.TextMessage, []byte(req.Changes)); err != nil {
 				log.Printf("Failed to send message to user %s: %v", user.UserID, err)
 			}
 		}
 	}
 
+	log.Printf("Changes synced successfully for document %s", req.DocumentId)
 	return &pb.SyncChangesResponse{Success: true}, nil
 }
 

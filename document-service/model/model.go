@@ -56,7 +56,12 @@ func (d *DocumentModel) GetDocumentByID(ctx context.Context, documentId string) 
 	result, err := d.DynamoDB.GetItem(ctx, input)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to scan items: %w", err)
+		return nil, fmt.Errorf("failed to get item: %w", err)
+	}
+
+	// Check if item exists
+	if result.Item == nil {
+		return nil, fmt.Errorf("document not found")
 	}
 
 	var document Document
@@ -89,35 +94,27 @@ func (d *DocumentModel) DeleteDocumentByID(ctx context.Context, documentId strin
 func (d *DocumentModel) UpdateDocumentByID(ctx context.Context, documentId string, content string) error {
 	timestamp := time.Now().Format(time.RFC3339)
 
-	update := map[string]types.AttributeValueUpdate{
-		"content": {
-			Action: types.AttributeActionPut,
-			Value:  &types.AttributeValueMemberS{Value: content},
-		},
-		"timestamp": {
-			Action: types.AttributeActionPut,
-			Value:  &types.AttributeValueMemberS{Value: timestamp},
-		},
-		"versions": {
-			Action: types.AttributeActionAdd,
-			Value:  &types.AttributeValueMemberL{Value: []types.AttributeValue{&types.AttributeValueMemberS{Value: timestamp}}},
-		},
-	}
-
+	// Use UpdateExpression to avoid overwriting other fields
 	input := &dynamodb.UpdateItemInput{
 		TableName: &d.TableName,
 		Key: map[string]types.AttributeValue{
 			"document_id": &types.AttributeValueMemberS{Value: documentId},
 		},
-		AttributeUpdates: update,
-		ReturnValues:     types.ReturnValueAllNew,
+		UpdateExpression: "SET content = :content, #ts = :timestamp ADD versions :version",
+		ExpressionAttributeNames: map[string]string{
+			"#ts": "timestamp",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":content":   &types.AttributeValueMemberS{Value: content},
+			":timestamp": &types.AttributeValueMemberS{Value: timestamp},
+			":version":   &types.AttributeValueMemberL{Value: []types.AttributeValue{&types.AttributeValueMemberS{Value: timestamp}}},
+		},
 	}
 
 	_, err := d.DynamoDB.UpdateItem(ctx, input)
 	if err != nil {
 		return fmt.Errorf("failed to update item: %w", err)
 	}
-
 	return nil
 }
 

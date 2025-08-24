@@ -13,19 +13,26 @@ import (
 )
 
 func JoinDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection("localhost:50053")
 	defer conn.Close()
 
 	client := pb.NewCollaborationServiceClient(conn)
 
 	vars := mux.Vars(r)
-	req := &pb.JoinDocumentRequest{
-		DocumentId: vars["document_id"],
+
+	var requestBody struct {
+		UserID     string `json:"user_id"`
+		DocumentID string `json:"document_id"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	req := &pb.JoinDocumentRequest{
+		DocumentId: vars["document_id"],
+		UserId:     requestBody.UserID,
 	}
 
 	resp, err := client.JoinDocument(context.Background(), req)
@@ -39,19 +46,30 @@ func JoinDocumentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SyncChangesHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection("localhost:50053")
 	defer conn.Close()
 
 	client := pb.NewCollaborationServiceClient(conn)
 
 	vars := mux.Vars(r)
-	req := &pb.SyncChangesRequest{
-		DocumentId: vars["document_id"],
+
+	var requestBody struct {
+		SessionID  string `json:"session_id"`
+		DocumentID string `json:"document_id"`
+		UserID     string `json:"user_id"`
+		Changes    string `json:"changes"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	req := &pb.SyncChangesRequest{
+		SessionId:  requestBody.SessionID,
+		DocumentId: vars["document_id"],
+		UserId:     requestBody.UserID,
+		Changes:    requestBody.Changes,
 	}
 
 	resp, err := client.SyncChanges(context.Background(), req)
@@ -65,19 +83,28 @@ func SyncChangesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LeaveDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection("localhost:50053")
 	defer conn.Close()
 
 	client := pb.NewCollaborationServiceClient(conn)
 
 	vars := mux.Vars(r)
-	req := &pb.LeaveDocumentRequest{
-		DocumentId: vars["document_id"],
+
+	var requestBody struct {
+		SessionID  string `json:"session_id"`
+		DocumentID string `json:"document_id"`
+		UserID     string `json:"user_id"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	req := &pb.LeaveDocumentRequest{
+		SessionId:  requestBody.SessionID,
+		DocumentId: vars["document_id"],
+		UserId:     requestBody.UserID,
 	}
 
 	resp, err := client.LeaveDocument(context.Background(), req)
