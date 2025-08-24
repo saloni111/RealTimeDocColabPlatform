@@ -6,6 +6,7 @@ app = "realtimedoccolabplatform"
 primary_region = "iad"
 
 [build]
+  dockerfile = "Dockerfile.fly"
 
 [env]
   ENV = "production"
