@@ -1,4 +1,4 @@
-# Multi-stage build for production
+# Multi-stage build for API Gateway (main service)
 FROM golang:1.21-alpine AS builder
 
 # Install git and build dependencies
@@ -7,16 +7,16 @@ RUN apk add --no-cache git
 # Set working directory
 WORKDIR /app
 
-# Copy go mod files
-COPY go.mod go.sum ./
+# Copy go mod files for API Gateway
+COPY api-gateway/go.mod api-gateway/go.sum ./
 
 # Download dependencies
 RUN go mod download
 
-# Copy source code
-COPY . .
+# Copy API Gateway source code
+COPY api-gateway/ .
 
-# Build the application
+# Build the API Gateway
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 # Production stage
@@ -39,4 +39,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 # Run the application
 CMD ["./main"]
-# Updated
