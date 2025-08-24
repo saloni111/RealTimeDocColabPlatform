@@ -39,4 +39,3 @@ replace github.com/saloni111/RealTimeDocColabPlatform/user-service => ../user-se
 replace github.com/saloni111/RealTimeDocColabPlatform/document-service => ../document-service
 
 replace github.com/saloni111/RealTimeDocColabPlatform/collaboration-service => ../collaboration-service
-# Updated
