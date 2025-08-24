@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/saloni111/RealTimeDocColabPlatform/api-gateway/utils"
-
-	pb "github.com/saloni111/RealTimeDocColabPlatform/collaboration-service/proto"
-
 	"github.com/gorilla/mux"
+	"github.com/saloni111/RealTimeDocColabPlatform/api-gateway/utils"
+	pb "github.com/saloni111/RealTimeDocColabPlatform/collaboration-service/proto"
 )
 
 func JoinDocumentHandler(w http.ResponseWriter, r *http.Request) {
@@ -116,4 +114,3 @@ func LeaveDocumentHandler(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(resp)
 }
-# Updated
