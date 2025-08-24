@@ -17,4 +17,3 @@ func GetGRPCConnection(address string) *grpc.ClientConn {
 
 	return conn
 }
-# Updated
