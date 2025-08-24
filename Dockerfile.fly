@@ -10,6 +10,11 @@ WORKDIR /app
 # Copy go mod files from api-gateway
 COPY api-gateway/go.mod api-gateway/go.sum ./
 
+# Copy all service directories for replace directives
+COPY user-service/ ./user-service/
+COPY document-service/ ./document-service/
+COPY collaboration-service/ ./collaboration-service/
+
 # Download dependencies
 RUN go mod download
 
