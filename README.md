@@ -19,13 +19,6 @@ DocHub is a full-featured collaborative document platform that allows multiple u
 - Smooth cursor behavior
 - Professional Google Docs-like interface
 
-**To view the demo:**
-1. Download the repository
-2. Open `dochub-demo.mov` in your video player
-3. See DocHub's real-time collaboration in action!
-
-*The demo video shows the complete user experience from document creation to real-time collaboration.*
-
 ## Table of contents
 
 - [Demo Video](#demo-video)
@@ -36,39 +29,6 @@ DocHub is a full-featured collaborative document platform that allows multiple u
 - [Installation](#installation)
 - [Real-World Testing](#real-world-testing)
 
-## Key Features
-
-**Real-Time Collaboration That Actually Works:**
-- Multiple users can edit the same document simultaneously
-- Changes appear within 2 seconds across all devices - no refresh needed
-- Live collaboration indicators show who's editing what
-- Perfect sync between all users - no more "version conflicts"
-
-**Document Management:**
-- Create, edit, and delete documents with instant persistence
-- Rich text editing with auto-save functionality
-- Document versioning with timestamp tracking
-- Real-time preview of all documents in a grid view
-
-**User Experience:**
-- Google Docs-style interface that feels familiar and professional
-- Responsive design that works on desktop and mobile
-- Intuitive navigation - no learning curve for users
-- Dark mode support for comfortable editing
-
-**Production Features:**
-- Health monitoring endpoints for service availability
-- Docker containerization for easy deployment
-- Environment-based configuration for different deployment scenarios
-- Comprehensive logging and error handling
-
-## My Process
-
-I started this project because I was tired of the limitations of existing collaborative tools. Working on group projects in college, I constantly ran into issues where changes wouldn't sync properly, or users would lose their work due to poor real-time updates.
-
-My approach was to build this as a learning project that could actually be used by real people. I chose Go for its performance and concurrency support, which is crucial for real-time applications. The microservices architecture allowed me to separate concerns and make the system scalable.
-
-The biggest challenge was implementing true real-time collaboration. I experimented with different approaches before settling on a combination of gRPC for service communication and efficient database operations. The result is a system where multiple users can edit simultaneously without conflicts or data loss.
 
 ## Built With
 
