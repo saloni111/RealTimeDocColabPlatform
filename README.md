@@ -10,7 +10,7 @@ DocHub is a full-featured collaborative document platform that allows multiple u
 
 🎥 **Watch DocHub in Action:**
 
-**Local Demo Video:** `dochub-demo.mov` (included in repository)
+**Demo Video:** `dochub-demo.mov` (included in repository)
 
 **What you'll see:**
 - Real-time collaborative editing
