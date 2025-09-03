@@ -6,12 +6,23 @@ A real-time collaborative document editing platform I built to solve the frustra
 
 DocHub is a full-featured collaborative document platform that allows multiple users to edit documents simultaneously in real-time. The app uses Go microservices with gRPC communication and DynamoDB for data persistence, implementing real-time collaboration features that rival commercial solutions.
 
-## Screenshot
+## Demo Video
 
-[Add your screenshot here]
+🎥 **Watch DocHub in Action:**
+[![DocHub Demo](https://img.shields.io/badge/Video-Demo-blue?style=for-the-badge&logo=youtube)](https://your-video-link-here)
+
+**What you'll see:**
+- Real-time collaborative editing
+- Multiple users typing simultaneously
+- Instant document synchronization
+- Smooth cursor behavior
+- Professional Google Docs-like interface
+
+*Note: Replace the video link above with your actual demo video URL*
 
 ## Table of contents
 
+- [Demo Video](#demo-video)
 - [Key Features](#key-features)
 - [My Process](#my-process)
 - [Built With](#built-with)
