@@ -22,8 +22,6 @@ DocHub is a full-featured collaborative document platform that allows multiple u
 ## Table of contents
 
 - [Demo Video](#demo-video)
-- [Key Features](#key-features)
-- [My Process](#my-process)
 - [Built With](#built-with)
 - [What I Learned](#what-i-learned)
 - [Installation](#installation)
