@@ -9,7 +9,8 @@ DocHub is a full-featured collaborative document platform that allows multiple u
 ## Demo Video
 
 🎥 **Watch DocHub in Action:**
-[![DocHub Demo](https://img.shields.io/badge/Video-Demo-blue?style=for-the-badge&logo=youtube)](https://your-video-link-here)
+
+**Local Demo Video:** `dochub-demo.mov` (included in repository)
 
 **What you'll see:**
 - Real-time collaborative editing
@@ -18,7 +19,12 @@ DocHub is a full-featured collaborative document platform that allows multiple u
 - Smooth cursor behavior
 - Professional Google Docs-like interface
 
-*Note: Replace the video link above with your actual demo video URL*
+**To view the demo:**
+1. Download the repository
+2. Open `dochub-demo.mov` in your video player
+3. See DocHub's real-time collaboration in action!
+
+*The demo video shows the complete user experience from document creation to real-time collaboration.*
 
 ## Table of contents
 
