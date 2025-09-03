@@ -242,6 +242,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
             color: #ea4335;
         }
         
+        .action-btn.share:hover {
+            background: rgba(66,133,244,0.1);
+            color: #4285f4;
+        }
+        
         .document-card:hover {
             box-shadow: 0 2px 8px rgba(60,64,67,.3);
             border-color: #4285f4;
@@ -740,6 +745,9 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
                 
                 card.innerHTML = 
                     '<div class="document-actions">' +
+                        '<button class="action-btn share" onclick="shareDocumentFromCard(\'' + doc.id + '\', \'' + doc.title + '\', event)" title="Share document">' +
+                            '<span class="material-icons">share</span>' +
+                        '</button>' +
                         '<button class="action-btn delete" onclick="deleteDocumentFromCard(\'' + doc.id + '\', event)" title="Delete document">' +
                             '<span class="material-icons">delete</span>' +
                         '</button>' +
@@ -912,6 +920,46 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
             }
         }
 
+        // Share document from card
+        function shareDocumentFromCard(docId, docTitle, event) {
+            event.stopPropagation();
+            
+            const shareUrl = window.location.origin + '?doc=' + docId;
+            
+            // Try to copy to clipboard first
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                // Show success message
+                const shareBtn = event.target.closest('.action-btn');
+                const originalHTML = shareBtn.innerHTML;
+                shareBtn.innerHTML = '<span class="material-icons">check</span>';
+                shareBtn.style.background = 'rgba(52,168,83,0.1)';
+                shareBtn.style.color = '#34a853';
+                
+                // Show alert with the share link
+                alert('✅ Share link copied to clipboard!\n\n' +
+                      'Document: "' + docTitle + '"\n' +
+                      'Link: ' + shareUrl + '\n\n' +
+                      'Anyone with this link can view and edit this document.\n\n' +
+                      'To collaborate:\n' +
+                      '1. Send this link to others\n' +
+                      '2. They can open it in their browser\n' +
+                      '3. Changes will sync automatically!');
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    shareBtn.innerHTML = originalHTML;
+                    shareBtn.style.background = '';
+                    shareBtn.style.color = '';
+                }, 3000);
+            }).catch(() => {
+                // Fallback: show the link in an alert
+                alert('📋 Share this document:\n\n' +
+                      'Document: "' + docTitle + '"\n' +
+                      'Link: ' + shareUrl + '\n\n' +
+                      'Copy this link and share it with others to collaborate!');
+            });
+        }
+
         // Delete document from card
         async function deleteDocumentFromCard(docId, event) {
             event.stopPropagation();
@@ -991,36 +1039,38 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
             if (!currentDocument) return;
             
             const shareUrl = window.location.origin + '?doc=' + currentDocument.id;
-            const deployedUrl = 'https://your-domain.com/?doc=' + currentDocument.id; // TODO: Update with your actual domain
             
-            // Show sharing modal
-            const shareText = 'Share this document with collaborators:\\n\\n' +
-                'Local Development: ' + shareUrl + '\\n' +
-                'Production URL: ' + deployedUrl + '\\n\\n' +
-                'Document: "' + currentDocument.title + '"\\n' +
-                'Anyone with this link can view and edit this document.';
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: currentDocument.title,
-                    text: 'Collaborate on: ' + currentDocument.title,
-                    url: shareUrl
-                });
-            } else {
-                // Try to copy to clipboard
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    const shareBtn = document.getElementById('shareBtn');
-                    const originalText = shareBtn.innerHTML;
-                    shareBtn.innerHTML = '<span class="material-icons">check</span>Copied!';
-                    alert('✅ Share link copied to clipboard!\n\nLink: ' + shareUrl + '\n\nNote: For production use, deploy to a public server so others can access it.');
-                    setTimeout(() => {
-                        shareBtn.innerHTML = originalText;
-                    }, 3000);
-                }).catch(() => {
-                    // Final fallback: show in prompt
-                    alert(shareText);
-                });
-            }
+            // Try to copy to clipboard first
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                const shareBtn = document.getElementById('shareBtn');
+                const originalText = shareBtn.innerHTML;
+                shareBtn.innerHTML = '<span class="material-icons">check</span>Copied!';
+                
+                // Show detailed sharing information
+                alert('✅ Share link copied to clipboard!\n\n' +
+                      'Document: "' + currentDocument.title + '"\n' +
+                      'Link: ' + shareUrl + '\n\n' +
+                      '🎯 How to collaborate:\n\n' +
+                      '1. Send this link to others via email, chat, or any messaging app\n' +
+                      '2. They click the link and the document opens automatically\n' +
+                      '3. Everyone can edit simultaneously - changes sync every 2 seconds\n' +
+                      '4. No accounts needed - just the link!\n\n' +
+                      '💡 Pro tip: Open the link in multiple browser tabs to test collaboration!');
+                
+                setTimeout(() => {
+                    shareBtn.innerHTML = originalText;
+                }, 3000);
+            }).catch(() => {
+                // Fallback: show the link in an alert
+                alert('📋 Share this document:\n\n' +
+                      'Document: "' + currentDocument.title + '"\n' +
+                      'Link: ' + shareUrl + '\n\n' +
+                      'Copy this link and share it with others to collaborate!\n\n' +
+                      '🎯 How it works:\n' +
+                      '• Send the link to others\n' +
+                      '• They open it and can edit immediately\n' +
+                      '• Changes sync automatically every 2 seconds');
+            });
         }
 
         // Auto-refresh document content every 5 seconds when editing

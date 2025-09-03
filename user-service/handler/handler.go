@@ -96,4 +96,3 @@ func (s *Server) GetUserProfile(ctx context.Context, req *pb.GetUserProfileReque
 		Name:   user.UserName,
 	}, nil
 }
-# Updated

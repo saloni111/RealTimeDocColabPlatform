@@ -112,4 +112,3 @@ func (s *Server) handleUserConnection(doc *model.Document, user *model.User) {
 		log.Printf("Received message from user %s: %s", user.UserID, message)
 	}
 }
-# Updated

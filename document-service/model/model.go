@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -100,14 +101,15 @@ func (d *DocumentModel) UpdateDocumentByID(ctx context.Context, documentId strin
 		Key: map[string]types.AttributeValue{
 			"document_id": &types.AttributeValueMemberS{Value: documentId},
 		},
-		UpdateExpression: "SET content = :content, #ts = :timestamp ADD versions :version",
+		UpdateExpression: aws.String("SET content = :content, #ts = :timestamp, versions = list_append(if_not_exists(versions, :empty_list), :version)"),
 		ExpressionAttributeNames: map[string]string{
 			"#ts": "timestamp",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":content":   &types.AttributeValueMemberS{Value: content},
-			":timestamp": &types.AttributeValueMemberS{Value: timestamp},
-			":version":   &types.AttributeValueMemberL{Value: []types.AttributeValue{&types.AttributeValueMemberS{Value: timestamp}}},
+			":content":    &types.AttributeValueMemberS{Value: content},
+			":timestamp":  &types.AttributeValueMemberS{Value: timestamp},
+			":version":    &types.AttributeValueMemberL{Value: []types.AttributeValue{&types.AttributeValueMemberS{Value: timestamp}}},
+			":empty_list": &types.AttributeValueMemberL{Value: []types.AttributeValue{}},
 		},
 	}
 
