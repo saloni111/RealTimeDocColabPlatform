@@ -840,8 +840,10 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
         function setupAutoSave() {
             const editor = document.getElementById('editorContent');
             
+            // Track ALL editing activity to prevent sync interruptions
             editor.addEventListener('input', function() {
                 if (currentDocument) {
+                    lastTypingTime = Date.now();
                     showSyncStatus('Saving...', 'loading');
                     
                     clearTimeout(saveTimeout);
@@ -849,6 +851,19 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
                         saveDocument();
                     }, 1000);
                 }
+            });
+            
+            // Also track other editing events
+            editor.addEventListener('keydown', function() {
+                lastTypingTime = Date.now();
+            });
+            
+            editor.addEventListener('paste', function() {
+                lastTypingTime = Date.now();
+            });
+            
+            editor.addEventListener('focus', function() {
+                lastTypingTime = Date.now();
             });
         }
 
@@ -1075,6 +1090,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
         // Auto-refresh document content every 5 seconds when editing
         let refreshInterval = null;
+        let lastTypingTime = 0;
         
         function startCollaborationSync() {
             if (refreshInterval) clearInterval(refreshInterval);
@@ -1088,15 +1104,20 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
                             const editor = document.getElementById('editorContent');
                             const currentEditorContent = editor.innerText || editor.textContent || '';
                             
-                            // Check if there's a real difference
+                            // STRICT protection against cursor disruption during active editing
+                            const isRecentlyTyping = (Date.now() - lastTypingTime) < 5000; // 5 seconds buffer
+                            const editorHasFocus = document.activeElement === editor;
+                            const isActivelyEditing = isRecentlyTyping || editorHasFocus;
+                            
+                            // Only update if content is different AND user is completely inactive
                             if (freshDoc.content !== currentEditorContent && 
-                                !editor.matches(':focus') && 
+                                !isActivelyEditing &&
                                 freshDoc.content !== currentDocument.content) {
-                                console.log('📝 Collaboration sync: updating from', currentEditorContent, 'to', freshDoc.content);
                                 
-                                // Update display
-                                editor.innerHTML = ''; // Clear first
-                                editor.innerText = freshDoc.content; // Set as clean text
+                                console.log('📝 Collaboration sync: Safe update (user inactive)');
+                                
+                                // Simple, safe content update - no cursor manipulation needed
+                                editor.innerText = freshDoc.content;
                                 
                                 // Update current document
                                 currentDocument.content = freshDoc.content;

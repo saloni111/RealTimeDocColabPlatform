@@ -1,38 +1,33 @@
-# fly.toml app configuration file for realtimedoccolabplatform
-app = "realtimedoccolabplatform"
-primary_region = "iad"
+# fly.toml app configuration file generated for realtimedoccolabplatform on 2025-08-24T11:33:45-04:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'realtimedoccolabplatform'
+primary_region = 'iad'
 
 [build]
-  dockerfile = "Dockerfile.fly"
+  dockerfile = 'Dockerfile.fly'
 
 [env]
-  ENV = "production"
-  DYNAMODB_LOCAL = "false"
-  PORT = "8080"
-  LOG_LEVEL = "info"
-
-[processes]
-  app = "main"
-
-[[vm]]
-  cpu_kind = "shared"
-  cpus = 1
-  memory_mb = 512
+  DYNAMODB_LOCAL = 'false'
+  ENV = 'production'
+  LOG_LEVEL = 'info'
+  PORT = '8080'
 
 [[services]]
-  protocol = "tcp"
+  protocol = 'tcp'
   internal_port = 8080
-  processes = ["app"]
 
   [[services.ports]]
     port = 80
-    handlers = ["http"]
+    handlers = ['http']
 
   [[services.ports]]
     port = 443
-    handlers = ["tls", "http"]
+    handlers = ['tls', 'http']
 
-  [[services.tcp_checks]]
-    grace_period = "10s"
-    interval = "30s"
-    timeout = "5s"
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1

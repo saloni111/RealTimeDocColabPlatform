@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "/api-gateway/main.go"
     }
-  ],
-  "functions": {
-    "api-gateway/main.go": {
-      "runtime": "go1.22"
-    }
-  }
+  ]
 }
