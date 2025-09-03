@@ -853,17 +853,12 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
                 }
             });
             
-            // Also track other editing events
-            editor.addEventListener('keydown', function() {
-                lastTypingTime = Date.now();
-            });
-            
-            editor.addEventListener('paste', function() {
-                lastTypingTime = Date.now();
-            });
-            
-            editor.addEventListener('focus', function() {
-                lastTypingTime = Date.now();
+            // Track ALL possible user interactions with the editor
+            ['keydown', 'keyup', 'keypress', 'input', 'paste', 'cut', 'focus', 'click', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach(eventType => {
+                editor.addEventListener(eventType, function() {
+                    lastTypingTime = Date.now();
+                    console.log('🖱️ User activity detected:', eventType);
+                });
             });
         }
 
@@ -1104,20 +1099,38 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
                             const editor = document.getElementById('editorContent');
                             const currentEditorContent = editor.innerText || editor.textContent || '';
                             
-                            // STRICT protection against cursor disruption during active editing
-                            const isRecentlyTyping = (Date.now() - lastTypingTime) < 5000; // 5 seconds buffer
+                            // ABSOLUTE protection - NO sync updates when editor has ANY focus or recent activity
                             const editorHasFocus = document.activeElement === editor;
-                            const isActivelyEditing = isRecentlyTyping || editorHasFocus;
+                            const isRecentlyActive = (Date.now() - lastTypingTime) < 10000; // 10 seconds buffer
+                            const shouldBlockSync = editorHasFocus || isRecentlyActive;
                             
-                            // Only update if content is different AND user is completely inactive
-                            if (freshDoc.content !== currentEditorContent && 
-                                !isActivelyEditing &&
-                                freshDoc.content !== currentDocument.content) {
+                            // Debug logging for sync decisions
+                            if (shouldBlockSync) {
+                                console.log('🚫 Sync BLOCKED - User active (focus:', editorHasFocus, 'recent activity:', isRecentlyActive, ')');
+                            } else if (freshDoc.content === currentEditorContent) {
+                                console.log('✅ Sync skipped - Content identical');
+                            } else if (freshDoc.content === currentDocument.content) {
+                                console.log('✅ Sync skipped - No new changes');
+                            } else if (currentEditorContent.trim() === '') {
+                                console.log('✅ Sync skipped - Editor empty');
+                            }
+                            
+                            // ONLY update if user is completely away from editor AND content actually changed
+                            if (!shouldBlockSync && 
+                                freshDoc.content !== currentEditorContent && 
+                                freshDoc.content !== currentDocument.content &&
+                                currentEditorContent.trim() !== '') {
                                 
-                                console.log('📝 Collaboration sync: Safe update (user inactive)');
+                                console.log('📝 Collaboration sync: SAFE UPDATE (user completely inactive)');
                                 
-                                // Simple, safe content update - no cursor manipulation needed
-                                editor.innerText = freshDoc.content;
+                                // Store current scroll position
+                                const scrollTop = editor.scrollTop;
+                                
+                                // Update content without touching cursor
+                                editor.textContent = freshDoc.content;
+                                
+                                // Restore scroll position
+                                editor.scrollTop = scrollTop;
                                 
                                 // Update current document
                                 currentDocument.content = freshDoc.content;
