@@ -11,7 +11,7 @@ import (
 )
 
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50051")
+	conn := utils.GetGRPCConnection(utils.UserServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewUserServiceClient(conn)
@@ -34,7 +34,7 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50051")
+	conn := utils.GetGRPCConnection(utils.UserServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewUserServiceClient(conn)
@@ -57,7 +57,7 @@ func LoginUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50051")
+	conn := utils.GetGRPCConnection(utils.UserServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewUserServiceClient(conn)

@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # DynamoDB Local
@@ -77,10 +76,13 @@ services:
       - "8080:8080"
     environment:
       - ENV=production
+      - DYNAMODB_LOCAL=true
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
       - USER_SERVICE_ADDR=user-service:50051
       - DOCUMENT_SERVICE_ADDR=document-service:50052
       - COLLABORATION_SERVICE_ADDR=collaboration-service:50053
     depends_on:
+      - dynamodb
       - user-service
       - document-service
       - collaboration-service
@@ -94,4 +96,3 @@ volumes:
 networks:
   dochub-network:
     driver: bridge
-# Updated

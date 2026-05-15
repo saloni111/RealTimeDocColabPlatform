@@ -13,7 +13,7 @@ import (
 )
 
 func CreateDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection(utils.DocumentServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewDocumentServiceClient(conn)
@@ -36,7 +36,7 @@ func CreateDocumentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection(utils.DocumentServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewDocumentServiceClient(conn)
@@ -63,7 +63,7 @@ func GetDocumentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection(utils.DocumentServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewDocumentServiceClient(conn)
@@ -90,7 +90,7 @@ func DeleteDocumentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection(utils.DocumentServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewDocumentServiceClient(conn)
@@ -123,7 +123,7 @@ func UpdateDocumentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ListDocumentVersionHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50052")
+	conn := utils.GetGRPCConnection(utils.DocumentServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewDocumentServiceClient(conn)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -27,11 +28,15 @@ func Upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 }
 
 func DynamoDBInstance() (*dynamodb.Client, error) {
-	// Configure for local DynamoDB
+	endpointURL := os.Getenv("DYNAMODB_ENDPOINT")
+	if endpointURL == "" {
+		endpointURL = "http://localhost:9000"
+	}
+
 	customResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
 			PartitionID:   "aws",
-			URL:           "http://localhost:9000",
+			URL:           endpointURL,
 			SigningRegion: "us-east-1",
 		}, nil
 	})

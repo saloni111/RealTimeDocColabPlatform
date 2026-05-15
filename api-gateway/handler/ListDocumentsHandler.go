@@ -10,6 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+
+	"github.com/saloni111/RealTimeDocColabPlatform/api-gateway/utils"
 )
 
 // Response structure for listing documents
@@ -27,11 +29,12 @@ type ListDocumentsResponse struct {
 }
 
 func GetDynamoDBClient() *dynamodb.Client {
+	endpoint := utils.DynamoDBEndpointURL()
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion("us-east-1"),
 		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
 			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-				return aws.Endpoint{URL: "http://localhost:9000"}, nil
+				return aws.Endpoint{URL: endpoint}, nil
 			},
 		)),
 		config.WithCredentialsProvider(credentials.StaticCredentialsProvider{

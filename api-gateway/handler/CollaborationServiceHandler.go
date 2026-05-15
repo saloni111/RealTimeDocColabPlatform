@@ -11,7 +11,7 @@ import (
 )
 
 func JoinDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50053")
+	conn := utils.GetGRPCConnection(utils.CollaborationServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewCollaborationServiceClient(conn)
@@ -44,7 +44,7 @@ func JoinDocumentHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SyncChangesHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50053")
+	conn := utils.GetGRPCConnection(utils.CollaborationServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewCollaborationServiceClient(conn)
@@ -81,7 +81,7 @@ func SyncChangesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LeaveDocumentHandler(w http.ResponseWriter, r *http.Request) {
-	conn := utils.GetGRPCConnection("localhost:50053")
+	conn := utils.GetGRPCConnection(utils.CollaborationServiceGRPCAddr())
 	defer conn.Close()
 
 	client := pb.NewCollaborationServiceClient(conn)
